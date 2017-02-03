@@ -1,8 +1,8 @@
 /*
 * File : graph.h
-* Stores the graph class and and implementations of graph traversals
+* Stores the graph class and and implementations of some graph algorithms
 * Author: Mahesh
-*/
+*/	
 
 #ifndef GRAPH_H
 #define GRAPH_H
@@ -27,6 +27,8 @@ class Graph{
 
 		void DFSTraversal(int sourceNode, bool *visited);
 		void topologicalSortUtil(int sourceNode, bool *visited, std::stack<int> &Stack);
+		void DFSOnReversedGraph(std::stack<int> &Stack);
+		void DFSOnReversedGraphUtil(int sourceNode, bool *visited, AdjList *revArray);
 
 	public:
 
@@ -37,6 +39,8 @@ class Graph{
 		void addEdge(int source, int destination);
 
 		void topologicalSort();
+
+		void stronglyConnectedComponents();
 				
 };
 
@@ -137,6 +141,91 @@ void Graph::topologicalSortUtil(int sourceNode, bool *visited, std::stack<int> &
 	}
 
 	Stack.push(sourceNode);
+}
+
+
+/*
+*  Function: stronglyConnectedComponents() 
+*  The function prints SCC of the graph in separate lines
+*/
+void Graph::stronglyConnectedComponents(){
+	std::stack<int> Stack;
+	bool visited[this->noOfVertices];
+
+	for(int i = 0; i < this->noOfVertices; i++){
+		visited[i] = false;
+	}
+
+	/* first order the graph nodes in decreasing order of finish time
+	*  then call dfsutil on the reversed graph
+	*/
+
+	for(int i = 0; i < this->noOfVertices; i++){
+		topologicalSortUtil(i, visited, Stack);
+	}
+
+	DFSOnReversedGraph(Stack);
+}
+
+/*
+*  Function: DFSOnReversedGraph(Stack)
+*  prints the strongly connected components of graph in separate lines
+*/
+
+void Graph::DFSOnReversedGraph(std::stack<int> &Stack){
+
+	bool visited[this->noOfVertices];
+	for(int i = 0; i < this->noOfVertices; i++){
+		visited[i] = false;
+	}
+
+	AdjList *revArray = new AdjList[this->noOfVertices];
+	for(int i = 0; i < this->noOfVertices; i++){
+		revArray[i].head = NULL;
+	}
+
+	for(int i = 0; i < this->noOfVertices; i++){
+		AdjListNode *ptr = this->listArray[i].head;
+
+		while(ptr != NULL){
+			AdjListNode *newNode = new AdjListNode();
+			newNode->destination = i;
+			newNode->next = revArray[ptr->destination].head;
+			revArray[ptr->destination].head = newNode;
+
+			ptr = ptr->next;
+		}
+	}
+
+	while(!Stack.empty()){
+		int vertex = Stack.top();
+		
+		if(!visited[vertex]){
+			DFSOnReversedGraphUtil(vertex, visited, revArray);
+			std::cout << std::endl;
+		}
+
+		Stack.pop();
+		visited[vertex] = true;
+	}
+}
+
+void Graph::DFSOnReversedGraphUtil(int sourceNode, bool *visited, AdjList *revArray){
+	
+	if(visited[sourceNode]){
+		return;
+	}
+
+	visited[sourceNode] = true;
+
+	std::cout << sourceNode << " ";
+
+	AdjListNode *ptr = revArray[sourceNode].head;
+
+	while(ptr != NULL){
+		DFSOnReversedGraphUtil(ptr->destination, visited, revArray);
+		ptr = ptr->next;
+	}
 }
 
 #endif

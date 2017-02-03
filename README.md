@@ -1,2 +1,1 @@
-# Data-Structures
-implementation of some common data structures using c++
+# Implementation of common data-structes and algorithms

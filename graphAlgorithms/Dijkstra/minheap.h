@@ -17,6 +17,9 @@ class Heap{
 public:
 
 	Heap(int capacity);
+	int indexOf(type);
+	type getElementAt(int index);
+	void decreaseKey(int index, int newVal);
 	int parent(int index);
 	int left_child(int index);
 	int right_child(int index);
@@ -28,7 +31,6 @@ public:
 	bool isFull();
 };
 
-#endif
 
 template <typename type>
 Heap<type>::Heap(int capacity){
@@ -109,7 +111,7 @@ type Heap<type>::dequeue(){
 	}
 
 	if(heap_size == 1){
-		return array[heap_size--];
+		return array[--heap_size];
 	}
 
 	type element = array[0];
@@ -139,5 +141,39 @@ void Heap<type>::reheapdown(int index){
 	}
 }
 
+template <typename type>
+int Heap<type>::indexOf(type element){
+	for(int i = 0; i < this->heap_size; i++){
+		if(this->array[i].equals(element)){
+			return i;
+		}
+	}
 
+	return -1;
+}
+
+template <typename type>
+type Heap<type>::getElementAt(int index){
+	if(index < 0 || index >= this->heap_size){
+		throw "invalid index";
+	}
+
+	return this->array[index];
+}
+
+template <typename type>
+void Heap<type>::decreaseKey(int index, int newVal){
+	
+	if(index < 0 || index >= heap_size){
+		throw "invalid index";
+	}
+
+	//setVal function should be defined in compareFn.h
+	setVal(this->array[index], newVal);
+
+	reheapup(index);
+}
+
+
+#endif
 

@@ -3,7 +3,7 @@
 
 int main(){
 
-	Heap min_heap(20);
+	Heap<int> min_heap(20);
 	min_heap.enqueue(5);
 	min_heap.enqueue(2);
 	min_heap.enqueue(7);
@@ -13,14 +13,9 @@ int main(){
 	min_heap.enqueue(4);
 	min_heap.enqueue(55);
 
-	std::cout << min_heap.dequeue() << std::endl;
-	std::cout << min_heap.dequeue() << std::endl;
-	std::cout << min_heap.dequeue() << std::endl;
-	std::cout << min_heap.dequeue() << std::endl;
-	std::cout << min_heap.dequeue() << std::endl;
-	std::cout << min_heap.dequeue() << std::endl;
-	std::cout << min_heap.dequeue() << std::endl;
-	std::cout << min_heap.dequeue() << std::endl;
-	std::cout << min_heap.dequeue() << std::endl;
+	while(!min_heap.isEmpty()){
+		std::cout << min_heap.dequeue() << std::endl;
+	}
 
+	return 0;
 }
